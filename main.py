@@ -62,9 +62,13 @@ def generate_projection_matrix(m, n):
                 A[cc, p] = 0.
     return A
 
+def generate_random_matrix(m, n, n_samples):
+    return np.random.randint(2, size=(n_samples, m*n)).astype(dtype=np.float64, order='F')
+
 def restoration(img):
     m,n = len(img), len(img[0])
-    A = generate_projection_matrix(m, n)
+    #A = generate_projection_matrix(m, n)
+    A = generate_random_matrix(m, n, 10000)
     debug_message('A', A)
 
     img_mat = np.array(img, dtype=np.float64, order='F')
@@ -72,14 +76,14 @@ def restoration(img):
     #projections = np.dot(A, img_vec).reshape((m+n,1), order='F')
     projections = np.dot(A, img_vec).ravel()
     debug_message('projections', projections)
-    penalty_order = -6
+    penalty_order = -3
     #penalty = (m+n) * math.pow(10, penalty_order)
     #w = spams.lasso(X=projections, D=A, return_reg_path=False, lambda1=penalty)
     estimator = linear_model.Lasso(
             alpha=math.pow(10, penalty_order)
             ,positive=True
             #,tol=math.pow(10,-5)
-            #,max_iter=math.pow(10,6)
+            ,max_iter=math.pow(10,6)
             )
     estimator.fit(A,projections)
     debug_message('n_iter', estimator.n_iter_)
