@@ -21,7 +21,7 @@ def debug_message(id, item):
     else:
         return
     if flag:
-        print title+":"
+        print(title+":")
         pprint.pprint(item)
 
 def generate_projection_matrix(m, n):
@@ -124,7 +124,7 @@ def make_diff(orig, target):
     return img
 
 def abs_sum(l):
-    return reduce(lambda acc,x: acc + abs(x), l, 0.)
+    return sum(abs(x) for x in l)
 
 def save_image(src_img):
     m,n = len(img), len(img[0])
@@ -139,7 +139,7 @@ def read_image():
     img = Image.open('input.png', 'r')
     data = list(img.getdata())
     #data = map(lambda x: x / 255., data)
-    r = [data[i: i+img.width] for i in xrange(0, len(data), img.width)]
+    r = [data[i: i+img.width] for i in range(0, len(data), img.width)]
     return r
 
 #random.seed(0)
@@ -154,8 +154,7 @@ debug_message('restored_img', restored_img)
 diff = make_diff(img,restored_img)
 debug_message('diff', diff)
 
-diff_v = reduce(lambda acc,x: acc + abs_sum(x), diff, 0.)
+diff_v = sum(abs_sum(line) for line in diff)
 debug_message('diff_v', diff_v)
 
 save_image(restored_img)
-
